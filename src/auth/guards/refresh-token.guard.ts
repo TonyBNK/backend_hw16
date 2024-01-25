@@ -4,15 +4,16 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ExpiredTokensQueryRepository } from '../../expired-tokens/expired-tokens.query-repository';
-import { jwtConstants } from '../constants';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
   constructor(
     private expiredTokensQueryRepository: ExpiredTokensQueryRepository,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -25,7 +26,7 @@ export class RefreshTokenGuard implements CanActivate {
 
     try {
       await this.jwtService.verifyAsync(refreshToken, {
-        secret: jwtConstants.secret,
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch {
       throw new UnauthorizedException('Token expired.');

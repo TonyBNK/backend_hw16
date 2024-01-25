@@ -4,8 +4,8 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from '../../auth/constants';
 import { SecurityDevicesQueryRepository } from '../security-devices.query-repository';
 
 @Injectable()
@@ -13,6 +13,7 @@ export class OwnSecurityDeviceGuard implements CanActivate {
   constructor(
     private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -21,7 +22,7 @@ export class OwnSecurityDeviceGuard implements CanActivate {
     const deviceId = request.params.deviceId;
 
     const payload = await this.jwtService.verifyAsync(refreshToken, {
-      secret: jwtConstants.secret,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
 
     const securityDevice =

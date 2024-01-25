@@ -4,14 +4,16 @@ import { ConfigService } from '@nestjs/config';
 
 type EmailInfo = { email: string; subject: string; message: string };
 
-const baseUrl = process.env.HOST_URL || 'http://localhost:3000';
-
 @Injectable()
 export class MailService {
+  baseUrl: string;
+
   constructor(
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.baseUrl = this.configService.get('HOST_URL', 'http://localhost:3000');
+  }
 
   async sendRegistrationConfirmationMessage(
     email: string,
@@ -22,7 +24,7 @@ export class MailService {
       subject: 'Jedi Registration',
       message: `<h1>Hello there!</h1>
  <p>To finish your registration follow the link below:
-     <a href='${baseUrl}/auth/registration-confirmation?code=${confirmationCode}'>complete registration</a>
+     <a href='${this.baseUrl}/auth/registration-confirmation?code=${confirmationCode}'>complete registration</a>
  </p>`,
     });
   }
@@ -36,7 +38,7 @@ export class MailService {
       subject: 'Jedi Password recovery',
       message: `<h1>Hello there!</h1>
  <p>To finish password recovery please follow the link below:
-     <a href='${baseUrl}/auth/password-recovery?recoveryCode=${confirmationCode}'>recovery password</a>
+     <a href='${this.baseUrl}/auth/password-recovery?recoveryCode=${confirmationCode}'>recovery password</a>
  </p>`,
     });
   }

@@ -1,6 +1,6 @@
+import { ConfigService } from '@nestjs/config';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from '../../auth/constants';
 import { SecurityDeviceDocument } from '../security-device.schema';
 import { SecurityDevicesQueryRepository } from '../security-devices.query-repository';
 
@@ -14,6 +14,7 @@ export class GetSecurityDevicesHandler
 {
   constructor(
     private readonly jwtService: JwtService,
+    private configService: ConfigService,
     private readonly securityDevicesQueryRepository: SecurityDevicesQueryRepository,
   ) {}
 
@@ -21,7 +22,7 @@ export class GetSecurityDevicesHandler
     refreshToken,
   }: GetSecurityDevicesQuery): Promise<Array<SecurityDeviceDocument>> {
     const payload = await this.jwtService.verifyAsync(refreshToken, {
-      secret: jwtConstants.secret,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
 
     return this.securityDevicesQueryRepository.getSecurityDevicesForUser(

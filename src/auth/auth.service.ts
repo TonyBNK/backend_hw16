@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { NotConfirmedAccountsQueryRepository } from '../not-confirmed-accounts/not-confirmed-accounts.query-repository';
 import { UserDocument } from '../users/user.schema';
 import { UsersQueryRepository } from '../users/users.query-repository';
-import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +12,7 @@ export class AuthService {
     private usersQueryRepository: UsersQueryRepository,
     private notConfirmedAccountsQueryRepository: NotConfirmedAccountsQueryRepository,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async validateUser(
@@ -47,6 +48,8 @@ export class AuthService {
   }
 
   async generateTokens(userId: string, userLogin: string, deviceId: string) {
+    const secret = this.configService.get<string>('JWT_SECRET');
+
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -54,7 +57,7 @@ export class AuthService {
           login: userLogin,
         },
         {
-          secret: jwtConstants.secret,
+          secret,
           expiresIn: '10s',
         },
       ),
@@ -65,7 +68,7 @@ export class AuthService {
           deviceId,
         },
         {
-          secret: jwtConstants.secret,
+          secret,
           expiresIn: '20s',
         },
       ),

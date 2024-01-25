@@ -1,8 +1,8 @@
+import { ConfigService } from '@nestjs/config';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { CreateExpiredTokenCommand } from '../../expired-tokens/commands';
 import { DeleteSecurityDeviceCommand } from '../../security-devices/commands';
-import { jwtConstants } from '../constants';
 
 export class LogoutUserCommand {
   constructor(public readonly refreshToken: string) {}
@@ -13,11 +13,12 @@ export class LogoutUserHandler implements ICommandHandler<LogoutUserCommand> {
   constructor(
     private commandBus: CommandBus,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async execute({ refreshToken }: LogoutUserCommand) {
     const payload = await this.jwtService.verifyAsync(refreshToken, {
-      secret: jwtConstants.secret,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
 
     await this.commandBus.execute(

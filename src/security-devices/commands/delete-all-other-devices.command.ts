@@ -1,8 +1,8 @@
+import { ConfigService } from '@nestjs/config';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { jwtConstants } from '../../auth/constants';
 import { SecurityDevice } from '../security-device.schema';
 
 export class DeleteAllOtherDevicesCommand {
@@ -17,13 +17,14 @@ export class DeleteAllOtherDevicesHandler
     @InjectModel(SecurityDevice.name)
     private SecurityDeviceModel: Model<SecurityDevice>,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async execute({
     refreshToken,
   }: DeleteAllOtherDevicesCommand): Promise<boolean> {
     const payload = await this.jwtService.verifyAsync(refreshToken, {
-      secret: jwtConstants.secret,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
 
     const result = await this.SecurityDeviceModel.deleteMany({

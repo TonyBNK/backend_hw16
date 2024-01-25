@@ -1,11 +1,11 @@
 import { UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { CreateExpiredTokenCommand } from '../../expired-tokens/commands';
 import { SecurityDevicesQueryRepository } from '../../security-devices/security-devices.query-repository';
 import { SecurityDevicesRepository } from '../../security-devices/security-devices.repository';
 import { AuthService } from '../auth.service';
-import { jwtConstants } from '../constants';
 
 export class RefreshTokenCommand {
   constructor(public readonly refreshToken: string) {}
@@ -22,15 +22,18 @@ export class RefreshTokenHandler
     private securityDevicesRepository: SecurityDevicesRepository,
     private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async execute({
     refreshToken,
   }: RefreshTokenCommand): ReturnType<typeof this.authService.generateTokens> {
+    const secret = this.configService.get<string>('JWT_SECRET');
+
     const { sub, login, deviceId } = await this.jwtService.verifyAsync(
       refreshToken,
       {
-        secret: jwtConstants.secret,
+        secret,
       },
     );
 
@@ -48,7 +51,7 @@ export class RefreshTokenHandler
     const tokens = await this.authService.generateTokens(sub, login, deviceId);
 
     const payload = await this.jwtService.verifyAsync(tokens.refreshToken, {
-      secret: jwtConstants.secret,
+      secret,
     });
 
     securityDevice.issueDate = new Date(payload.iat * 1000).toISOString();

@@ -1,11 +1,11 @@
 import { BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { CreateSecurityDeviceCommand } from '../../security-devices/commands';
 import { SecurityDevicesQueryRepository } from '../../security-devices/security-devices.query-repository';
 import { SecurityDevicesRepository } from '../../security-devices/security-devices.repository';
 import { AuthService } from '../auth.service';
-import { jwtConstants } from '../constants';
 import { LoginUserDto } from '../dto';
 
 export class LoginUserCommand {
@@ -21,6 +21,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     private securityDevicesRepository: SecurityDevicesRepository,
     private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async execute({
@@ -56,7 +57,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     );
 
     const payload = await this.jwtService.verifyAsync(tokens.refreshToken, {
-      secret: jwtConstants.secret,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
 
     securityDevice.issueDate = new Date(payload.iat * 1000).toISOString();
