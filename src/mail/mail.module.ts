@@ -10,7 +10,7 @@ import { MailService } from './mail.service';
     MailerModule.forRootAsync({
       useFactory: async (configSirvice: ConfigService) => ({
         transport: {
-          service: 'Yandex',
+          service: 'Gmail',
           host: 'localhost',
           secure: false,
           auth: {
