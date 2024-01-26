@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: pnpm install # устанавливаем зависимости
+        run: pnpm i # устанавливаем зависимости
 
       - name: Test
         run: pnpm test # запускаем скрипт тестами
