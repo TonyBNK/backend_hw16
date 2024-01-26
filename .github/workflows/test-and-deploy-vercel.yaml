@@ -20,9 +20,9 @@ jobs:
           version: 8
 
       - name: Load environment variables
-        uses: dotenv-actions/setup-dotenv@v2
+        uses: q3k/ghaction-secrets@v1
         with:
-          dotenv_path: .env
+          SEEK: '.env'
 
       - name: Install dependencies
         run: pnpm i # устанавливаем зависимости
