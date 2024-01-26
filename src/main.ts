@@ -1,7 +1,10 @@
+import { ConfigModule } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import { appSettings } from './utils';
+
+ConfigModule.forRoot();
 
 const PORT = process.env.PORT || 3000;
 
