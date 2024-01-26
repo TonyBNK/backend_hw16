@@ -17,8 +17,6 @@ import { PostsModule } from './posts/posts.module';
 import { SecurityDevicesModule } from './security-devices/security-devices.module';
 import { UsersModule } from './users/users.module';
 
-const dbName = 'blog_platform';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,10 +27,7 @@ const dbName = 'blog_platform';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        uri: config.get<string>(
-          'MONGO_URL',
-          `mongodb://0.0.0.0:27017/${dbName}`,
-        ),
+        uri: config.get<string>('MONGO_URL'),
       }),
     }),
     JwtModule.register({ global: true }),
