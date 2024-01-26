@@ -44,6 +44,10 @@ describe('Blogs e2e', () => {
   });
 
   afterAll(async () => {
+    await request(server)
+      .delete(`${routerPaths.testing}/all-data`)
+      .expect(HttpStatus.NO_CONTENT);
+
     await app.close();
   });
 

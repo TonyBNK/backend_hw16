@@ -3,14 +3,19 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { ErrorResult, Paginator, UserViewModel } from '../../src/types';
 import { CreateUserDto } from '../../src/users/dto';
-import { basicAuth, createTestApp, routerPaths } from '../utils';
+import {
+  basicAuth,
+  createFakeMongoId,
+  createTestApp,
+  routerPaths,
+} from '../utils';
 
 describe('Users e2e', () => {
   let app: INestApplication;
   let server: App;
   let newUser: UserViewModel | null = null;
 
-  const wrongId = '123456789101112131415161';
+  const fakeId = createFakeMongoId();
   const emptyGetAllResponse: Paginator<UserViewModel> = {
     totalCount: 0,
     pagesCount: 0,
@@ -29,6 +34,10 @@ describe('Users e2e', () => {
   });
 
   afterAll(async () => {
+    await request(server)
+      .delete(`${routerPaths.testing}/all-data`)
+      .expect(HttpStatus.NO_CONTENT);
+
     await app.close();
   });
 
@@ -166,7 +175,7 @@ describe('Users e2e', () => {
 
     it('should return status 404 if user does not exist', async () => {
       await request(server)
-        .delete(`${routerPaths.users}/${wrongId}`)
+        .delete(`${routerPaths.users}/${fakeId}`)
         .set(basicAuth)
         .expect(HttpStatus.NOT_FOUND);
     });

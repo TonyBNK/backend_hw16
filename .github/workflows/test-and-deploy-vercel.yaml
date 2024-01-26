@@ -21,6 +21,13 @@ jobs:
 
       - name: Install dependencies
         run: pnpm i # устанавливаем зависимости
+        env:
+          MONGO_URL: ${{ secrets.MONGO_URL }}
+          SUPER_ADMIN_LOGIN: ${{ secrets.SUPER_ADMIN_LOGIN }}
+          SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
       - name: Test
         run: pnpm test # запускаем скрипт тестами
