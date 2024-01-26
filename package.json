@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./__tests__/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.10.3",
@@ -83,8 +83,8 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "rootDir": "__tests__",
+    "testRegex": ".*\\.(spec\\.ts|e2e-spec\\.ts|e2e\\.ts)$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
