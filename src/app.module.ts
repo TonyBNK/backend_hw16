@@ -23,8 +23,7 @@ const dbName = 'blog_platform';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile: true,
-      // envFilePath: ['.env.local', '.env'],
+      envFilePath: ['.env.local', '.env'],
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
