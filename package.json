@@ -37,7 +37,6 @@
     "cookie-parser": "^1.4.6",
     "date-fns": "^3.3.0",
     "mongoose": "^8.0.4",
-    "node-fetch": "2.6.1",
     "nodemailer": "^6.9.8",
     "passport": "^0.7.0",
     "passport-http": "^0.3.0",
@@ -94,5 +93,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "resolutions": {
+    "string-width": "4.2.3"
   }
 }
