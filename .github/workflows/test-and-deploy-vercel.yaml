@@ -19,15 +19,19 @@ jobs:
         with:
           version: 8
 
+      - name: Load environment variables
+        uses: dotenv-actions/setup-dotenv@v2
+        with:
+          dotenv_path: .env
+        run: echo "MONGO_URL -> $MONGO_URL"
+        run: echo "SUPER_ADMIN_LOGIN -> $SUPER_ADMIN_LOGIN"
+        run: echo "SUPER_ADMIN_PASSWORD -> $SUPER_ADMIN_PASSWORD"
+        run: echo "JWT_SECRET -> $JWT_SECRET"
+        run: echo "EMAIL_ADDRESS -> $EMAIL_ADDRESS"
+        run: echo "EMAIL_PASSWORD -> $EMAIL_PASSWORD"
+
       - name: Install dependencies
         run: pnpm i # устанавливаем зависимости
-        env:
-          MONGO_URL: ${{ secrets.MONGO_URL }}
-          SUPER_ADMIN_LOGIN: ${{ secrets.SUPER_ADMIN_LOGIN }}
-          SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
       - name: Test
         run: pnpm test # запускаем скрипт тестами
