@@ -35,8 +35,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: Tests
     steps:
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Install pnpm # устанавливаем pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/checkout@v2
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
