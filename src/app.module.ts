@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
@@ -19,15 +19,22 @@ import { UsersModule } from './users/users.module';
 
 const dbName = 'blog_platform';
 
-const mongoURI = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${dbName}`;
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
     }),
-    MongooseModule.forRoot(mongoURI),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        uri: config.get<string>(
+          'MONGO_URL',
+          `mongodb://0.0.0.0:27017/${dbName}`,
+        ),
+      }),
+    }),
     JwtModule.register({ global: true }),
     ThrottlerModule.forRoot([
       {
