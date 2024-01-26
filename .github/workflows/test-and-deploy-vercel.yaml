@@ -11,11 +11,16 @@ jobs:
     name: Tests # название конктретной работы в pipeline
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout # клонируем репозиторый
+      - name: Checkout # клонируем репозиторий
         uses: actions/checkout@v2
 
+      - name: PNPM # устанавливаем pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Install dependencies
-        run: pnpm # устанавливаем зависимости
+        run: pnpm i # устанавливаем зависимости
 
       - name: Test
         run: pnpm test # запускаем скрипт тестами
