@@ -19,10 +19,22 @@ jobs:
         with:
           version: 8
 
-      - name: Load environment variables
-        uses: q3k/ghaction-secrets@v1
-        with:
-          SEEK: '.env'
+      - name: Использование переменных окружения
+        env:
+          MONGO_URL: ${{ secrets.MONGO_URL }}
+          SUPER_ADMIN_LOGIN: ${{ secrets.SUPER_ADMIN_LOGIN }}
+          SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: |
+          echo "Используем переменные окружения:"
+          echo $MONGO_URL
+          echo $SUPER_ADMIN_LOGIN
+          echo $SUPER_ADMIN_PASSWORD
+          echo $JWT_SECRET
+          echo $EMAIL_ADDRESS
+          echo $EMAIL_PASSWORD
 
       - name: Install dependencies
         run: pnpm i # устанавливаем зависимости
