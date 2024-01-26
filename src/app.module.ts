@@ -17,6 +17,8 @@ import { PostsModule } from './posts/posts.module';
 import { SecurityDevicesModule } from './security-devices/security-devices.module';
 import { UsersModule } from './users/users.module';
 
+const dbName = 'blog_platform';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,10 +26,12 @@ import { UsersModule } from './users/users.module';
       envFilePath: ['.env.local', '.env'],
     }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        uri: config.get<string>('MONGO_URL'),
+        uri: config.get<string>(
+          'MONGO_URL',
+          `mongodb://0.0.0.0:27017/${dbName}`,
+        ),
       }),
     }),
     JwtModule.register({ global: true }),

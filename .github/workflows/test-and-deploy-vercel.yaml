@@ -14,7 +14,7 @@ jobs:
       - name: Checkout # клонируем репозиторий
         uses: actions/checkout@v2
 
-      - name: PNPM # устанавливаем pnpm
+      - name: Install pnpm # устанавливаем pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
